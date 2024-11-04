@@ -1,7 +1,6 @@
-import { YSweetProvider } from "@y-sweet/client";
-import type { RelativePosition } from "yjs";
+import { WebsocketProvider } from 'y-websocket';
+import * as Y from 'yjs';
 
-import Doc from "./doc.svelte";
 
 export interface User {
   name: string;
@@ -10,31 +9,31 @@ export interface User {
 
 interface Peer {
   user: User;
-  cursor?: { anchor?: RelativePosition; head?: RelativePosition };
+  cursor?: { anchor?: Y.RelativePosition; head?: Y.RelativePosition };
 }
 
 export default class Collab {
-  #provider = $state<YSweetProvider>({} as YSweetProvider);
+  #provider: WebsocketProvider;
   #local: Peer = { user: { name: "", color: "" } };
 
-  awareness = $derived(this.#provider.awareness);
+  awareness: any;
 
   #states = $state<Peer[]>([]);
   local = $state<Peer>(this.#local);
   peers = $derived(this.#states.filter(peer => peer !== this.local));
 
-  constructor(url: string, doc: Doc, user: User) {
-    this.#provider = new YSweetProvider(url, doc.guid, doc.ydoc);
+  constructor(url: string, doc: Y.Doc, user: User) {
+    this.#provider = new WebsocketProvider(url, doc.guid, doc);
+    this.awareness = this.#provider.awareness;
 
     this.#local = this.local = { user };
-    this.#provider.awareness.setLocalStateField("user", user);
+    this.awareness.setLocalStateField("user", user);
 
-    this.#provider.awareness.on("change", () => {
-      // TODO: actually check types
-      const local = (this.#provider.awareness.getLocalState() as Peer) || this.#local;
+    this.awareness.on("change", () => {
+      const local = this.awareness.getLocalState() as Peer || this.#local;
       this.local = this.#local = { ...local, cursor: local.cursor || this.#local.cursor };
 
-      this.#states = [...this.#provider.awareness.getStates().values()] as Peer[];
+      this.#states = [...this.awareness.getStates().values()] as Peer[];
     });
   }
 }

@@ -13,6 +13,7 @@
     "format": "prettier --write ."
   },
   "devDependencies": {
+    "@sveltejs/adapter-node": "^5.2.5",
     "@sveltejs/kit": "^2.5.1",
     "@sveltejs/vite-plugin-svelte": "^3.0.2",
     "@types/mapbox__polyline": "^1.0.5",
@@ -37,6 +38,7 @@
     "@shoelace-style/shoelace": "^2.14.0",
     "@stadiamaps/api": "^1.0.10",
     "@sveltejs/adapter-cloudflare": "^4.1.0",
+    "@syncedstore/core": "^0.6.0",
     "@y-sweet/client": "^0.1.0",
     "@y-sweet/sdk": "^0.1.0",
     "maplibre-gl": "^4.0.2",
@@ -52,8 +54,10 @@
     "prosemirror-state": "^1.4.3",
     "prosemirror-view": "^1.33.1",
     "protomaps-themes-base": "2.0.0-alpha.5",
+    "ws": "^8.18.0",
     "y-indexeddb": "^9.0.12",
     "y-prosemirror": "^1.2.2",
+    "y-websocket": "^2.0.4",
     "yjs": "^13.6.12"
   }
 }

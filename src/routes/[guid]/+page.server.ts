@@ -1,8 +1,15 @@
 import type { PageServerLoadEvent } from "./$types";
-
-import { getOrCreateDocAndToken } from "@y-sweet/sdk";
-import { Y_SWEET_CONNECTION_STRING } from "$env/static/private";
+import * as Y from 'yjs';
 
 export async function load({ params }: PageServerLoadEvent) {
-  return getOrCreateDocAndToken(Y_SWEET_CONNECTION_STRING, params.guid);
+  // Create a new Yjs document
+  const ydoc = new Y.Doc();
+  ydoc.guid = params.guid;
+
+  // Return a mock token and URL
+  return {
+    docId: params.guid,
+    url: `ws://localhost:1234`, // This is a mock URL
+    token: "mock-token"
+  };
 }

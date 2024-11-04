@@ -1,18 +1,9 @@
-import {
-  Doc as YDoc,
-  XmlElement,
-  createAbsolutePositionFromRelativePosition,
-  type AbstractType,
-  type RelativePosition,
-  encodeStateAsUpdate,
-  applyUpdate,
-  XmlFragment
-} from "yjs";
+import * as Y from 'yjs';
 import { IndexeddbPersistence } from "y-indexeddb";
 import type { Place, Route } from "./place";
 
 export default class Doc {
-  ydoc = $state(new YDoc());
+  ydoc = $state(new Y.Doc());
 
   get guid() {
     return this.ydoc.guid;
@@ -31,13 +22,15 @@ export default class Doc {
     this.#title = title;
   }
 
-  outline = $derived(this.ydoc.getXmlFragment("outline"));
+  #outline = $state<Y.XmlFragment>(this.ydoc.getXmlFragment("outline"));
+  get outline() {
+    return this.#outline;
+  }
 
-  constructor(ydoc = new YDoc()) {
+  constructor(ydoc = new Y.Doc()) {
     this.ydoc = ydoc;
     new IndexeddbPersistence(this.guid, this.ydoc);
 
-    // HACK places: the yjs doc is mutated internally, so we need to manually invalidate the reactive variable
     this.#invalidate();
     this.ydoc.on("update", () => this.#invalidate());
   }
@@ -164,7 +157,7 @@ export default class Doc {
   }
 
   static create(guid: string) {
-    return new Doc(new YDoc({ guid }));
+    return new Doc(new Y.Doc({ guid }));
   }
 
   static parse(data: Uint8Array) {
